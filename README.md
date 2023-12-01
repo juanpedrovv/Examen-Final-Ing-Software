@@ -1,2 +1,2 @@
-# exa_final
-Examen Final Ing de Software
+#Examen Final Ingenieria de Software
+- Alumno: Juan Pedro Vásquez Vilchez
