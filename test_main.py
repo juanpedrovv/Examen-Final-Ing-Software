@@ -1,4 +1,3 @@
-# ARCHIVO: /c:/Users/PC/Desktop/Software/test_main.py
 import unittest
 from flask import Flask, jsonify, request
 from main import app
