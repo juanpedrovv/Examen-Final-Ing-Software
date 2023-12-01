@@ -4,7 +4,7 @@ import json
 import datetime
 from flask import make_response
 
-# Crear la aplicacion
+# Crear la aplicación
 app = Flask(__name__)
 CORS(app)
 
@@ -117,37 +117,37 @@ def contactos():
     return response
 
 
-# Define the endpoint /billetera/pagar?minumero=XXXX&numerodestino=YYYY&valor=ZZZZ
+# Definir el endpoint /billetera/pagar?minumero=XXXX&numerodestino=YYYY&valor=ZZZZ
 @app.route('/billetera/pagar', methods=['GET'])
 def pagar():
-    numero = request.args.get('minumero')  # Get the 'minumero' parameter from the request
-    numeroDestino = request.args.get('numerodestino')  # Get the 'numerodestino' parameter from the request
-    valor = int(request.args.get('valor'))  # Get the 'valor' parameter from the request and convert it to an integer
+    numero = request.args.get('minumero')
+    numeroDestino = request.args.get('numerodestino')
+    valor = int(request.args.get('valor'))
 
-    for cuenta in BD:  # Iterate over the list of accounts
-        if cuenta.getNumero() == numero:  # Check if the account number matches the 'numero' parameter
-            if cuenta.getSaldo() >= valor:  # Check if the account has enough balance to make the payment
-                for contacto in cuenta.getContactos():  # Iterate over the contacts of the account
-                    if contacto == numeroDestino:  # Check if the contact matches the 'numerodestino' parameter
-                        # Update the account balances and add operation records
+    for cuenta in BD:
+        if cuenta.getNumero() == numero:  #Verificar si el número de cuenta coincide con el parámetro 'numero'
+            if cuenta.getSaldo() >= valor:  #Verificar si la cuenta tiene saldo suficiente para realizar el pago
+                for contacto in cuenta.getContactos():  #Iterar sobre los contactos de la cuenta
+                    if contacto == numeroDestino:  #Verificar si el contacto coincide con el parámetro 'numerodestino'
+                        # Actualizar los saldos de las cuentas y agregar registros de operaciones
                         cuenta.setSaldo(cuenta.getSaldo() - valor)
                         cuenta.agregarOperacion(Operacion(numeroDestino, datetime.datetime.now().strftime("%d/%m/%Y"), valor))
 
-                        for cuenta_destino in BD:  # Iterate over the list of accounts again
-                            if cuenta_destino.getNumero() == numeroDestino:  # Check if the destination account number matches
-                                # Update the destination account balance and add operation records
+                        for cuenta_destino in BD:
+                            if cuenta_destino.getNumero() == numeroDestino:  #Verificar si el número de cuenta de destino coincide
+                                #Actualizar el saldo de la cuenta de destino y agregar registros de operaciones
                                 cuenta_destino.setSaldo(cuenta_destino.getSaldo() + valor)
                                 cuenta_destino.agregarOperacion(Operacion(numero, datetime.datetime.now().strftime("%d/%m/%Y"), valor))
                                 response = make_response(jsonify("Realizado en " + str(datetime.datetime.now().strftime("%d/%m/%Y"))), 200)
                                 return response
 
-                        return make_response(jsonify("No se encontro el contacto"), 400)  # Contact not found
+                        return make_response(jsonify("No se encontro el contacto"), 400)  #Contacto no encontrado
 
-                return make_response(jsonify("El numero de destino no ha sido encontrado"), 400)  # Destination account not found
+                return make_response(jsonify("El numero de destino no ha sido encontrado"), 400)  #Cuenta de destino no encontrada
 
-            return make_response(jsonify("No tiene saldo suficiente"), 400)  # Insufficient balance
+            return make_response(jsonify("No tiene saldo suficiente"), 400)  #saldo insuficiente
 
-    return make_response(jsonify("No se encontro el numero de entrada"), 400)  # Account not found
+    return make_response(jsonify("No se encontro el numero de entrada"), 400)  #Cuenta no encontrada
 
 
 # Crear el endpoint /billetera/historial?minumero=XXXX
@@ -159,12 +159,6 @@ def historial():
             return jsonify("Saldo de " + cuenta.getNombre() + ": " + str(cuenta.getSaldo()) + " Operaciones de " + cuenta.getNombre() + ": " + str(cuenta.getOperaciones()))
     return make_response(jsonify("No se encontro el numero"),400)
 
-# Iniciar la aplicacion
+# Iniciar la aplicación
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
-    
-
-
-
-
-
